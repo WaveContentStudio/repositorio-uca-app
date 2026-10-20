@@ -1,0 +1,82 @@
+REPOSITORIO UCA - KIT PARA GENERAR LA APP DE ANDROID (APK)
+============================================================
+
+Todo se hace desde el navegador. No hace falta instalar nada ni tener permisos de administrador.
+La app arranca VACIA: no trae apuntes de ejemplo. Lo que suban los alumnos queda en la base de datos
+y lo ven todos en tiempo real.
+
+QUE HAY EN ESTA CARPETA
+  www/                      la app (index.html, config.js, etc.)
+  assets/                   ícono y pantalla de inicio
+  package.json, package-lock.json, capacitor.config.json   configuración para armar la app
+  .github/workflows/        la receta que compila el APK en GitHub (es una carpeta oculta, ver paso 3)
+  workflow-build-apk.yml.txt  copia de esa receta, por si la carpeta oculta no se sube
+  supabase-setup.sql        se pega en Supabase (paso 1). NO va a GitHub.
+
+
+PASO 1 - CREAR LA BASE DE DATOS (Supabase)
+  1. Entrá a https://supabase.com y creá una cuenta (podés usar "Continue with GitHub").
+  2. New project: ponele un nombre (ej: repositorio-uca), inventá una contraseña de base de datos
+     y guardala, elegí la región más cercana (South America / São Paulo) y creá el proyecto. Tarda 1 o 2 minutos.
+  3. En el menú de la izquierda: SQL Editor > New query.
+     Abrí supabase-setup.sql con el Bloc de notas, copiá TODO el texto, pegalo y apretá Run.
+     Tiene que decir "Success". (Se puede correr más de una vez sin problema.)
+  4. Authentication > Sign In / Providers > Email: apagá "Confirm email" y guardá.
+     Si queda prendido, los alumnos no pueden entrar porque no les llega ningún mail.
+  5. Project Settings > API (o el botón "Connect"): copiá dos datos
+        - Project URL            (algo como https://abcdxyz.supabase.co)
+        - Publishable key        (empieza con sb_publishable_...; si tu proyecto muestra "anon", sirve la anon)
+     NUNCA copies la "secret" ni la "service_role": esas dan control total de la base.
+
+PASO 2 - PONER TUS DATOS EN LA APP
+  Abrí www/config.js con el Bloc de notas y reemplazá las dos líneas:
+      SUPABASE_URL: "https://abcdxyz.supabase.co",
+      SUPABASE_KEY: "sb_publishable_xxxxxxxxxxxx"
+  Guardá. (También lo podés editar después directo en GitHub, ver más abajo.)
+
+PASO 3 - SUBIR TODO A GITHUB
+  1. En github.com: botón "+" > New repository. Nombre: repositorio-uca-app. Public. Create repository.
+  2. En la página del repo nuevo, link "uploading an existing file".
+  3. Arrastrá TODO el contenido de esta carpeta (las carpetas www y assets y los archivos sueltos) y esperá
+     a que termine de cargar. Abajo, "Commit changes".
+  4. Revisá que en el repo aparezca la carpeta .github con workflows/build-apk.yml adentro.
+     Si NO aparece (algunos navegadores no suben carpetas que empiezan con punto), hacé esto:
+        Add file > Create new file. En el nombre escribí exactamente:   .github/workflows/build-apk.yml
+        (al escribir las barras se van creando las carpetas). Pegá adentro todo el texto de
+        workflow-build-apk.yml.txt y apretá "Commit changes".
+
+PASO 4 - COMPILAR EL APK
+  Al subir los archivos, GitHub empieza solo a armar la app.
+  1. Pestaña "Actions": vas a ver "Generar APK" corriendo (círculo amarillo). Tarda entre 5 y 10 minutos.
+     Si no arrancó: entrá a "Generar APK" > botón "Run workflow" > Run workflow.
+  2. Cuando aparece el tilde verde, hacé clic en esa ejecución. Abajo, en "Artifacts", está
+     Repositorio-UCA-apk: bajalo (viene en un zip con el .apk adentro).
+  3. Más cómodo para el celu: en la página principal del repo, columna derecha, "Releases".
+     Ahí está Repositorio-UCA.apk para bajar directo desde el teléfono.
+  Si sale una cruz roja, entrá a la ejecución, abrí el paso que falló y copiame el texto del error.
+
+PASO 5 - INSTALARLO EN EL CELULAR
+  1. Bajá Repositorio-UCA.apk en el celular (desde Releases) o pasalo por WhatsApp/Drive/cable.
+  2. Al abrirlo, Android pide permitir instalar apps desde esa fuente (Chrome, Archivos, WhatsApp...):
+     activalo solo para esa app.
+  3. Si Google Play Protect avisa que la app no está verificada, tocá "Instalar de todos modos".
+     Es normal: la app no está publicada en Play Store.
+  4. Abrila, creá una cuenta y subí un apunte de prueba. Entrá desde otro celular con otra cuenta:
+     el apunte tiene que aparecer solo, sin recargar, y se tiene que poder descargar.
+
+PARA ACTUALIZAR LA APP MAS ADELANTE
+  Editá el archivo en GitHub (ej: www/config.js, lápiz, Commit changes). Cada cambio genera un APK nuevo
+  en Releases. Hay que instalar el nuevo encima del viejo.
+
+
+COSAS QUE CONVIENE SABER
+  - Datos compartidos: solo funcionan una vez que config.js tiene los datos de Supabase. Con los datos de
+    ejemplo la app anda, pero guarda todo dentro de cada celular y no se comparte con nadie.
+  - Supabase gratis pausa el proyecto si pasa más o menos una semana sin uso. Si pasa, entrá a supabase.com
+    y apretá "Restore project"; los datos siguen ahí. Conviene entrar el día antes de presentar.
+  - Los archivos tienen un máximo de 20 MB (PDF, Word, PowerPoint, JPG, PNG).
+  - El APK es de prueba (firma "debug"): sirve para instalar y mostrar, no para subir a Play Store.
+  - Descargas en el celular: se abre el navegador del teléfono y baja el archivo a Descargas.
+  - "Continuar con cuenta UCA" no funciona: necesita que la universidad habilite un acceso institucional.
+    Hoy se ingresa con mail y contraseña.
+  - Recuperar contraseña por mail todavía no existe: la pantalla lo avisa y propone crear una cuenta nueva.

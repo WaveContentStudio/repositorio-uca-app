@@ -1,0 +1,9 @@
+{
+  "appId": "io.github.wavecontentstudio.repositoriouca",
+  "appName": "Repositorio UCA",
+  "webDir": "www",
+  "backgroundColor": "#0F172A",
+  "android": {
+    "allowMixedContent": false
+  }
+}
